@@ -1,0 +1,37 @@
+Author: Andreas Beckmann <anbe@debian.org>
+Description: HACK: UltraSPARC-III+/IIIi: disable conflicting event with code 0x4
+ there are three events using code 0x4, but only two registers
+
+--- a/lib/events/sparc_ultra3i_events.h
++++ b/lib/events/sparc_ultra3i_events.h
+@@ -381,11 +381,13 @@ static const sparc_entry_t ultra3i_pe[]
+ 	},
+ 
+ 	/* PIC1 events specific to UltraSPARC-III+/IIIi */
++/* conflicting .code 0x4
+ 	{
+ 		.name = "Re_DC_missovhd",
+ 		.desc = "Used to measure D-cache stall counts separately for L2-cache hits and misses.  This counter is used with the recirculation and cache access events to separately calculate the D-cache loads that hit and miss the L2-cache",
+ 		.ctrl = PME_CTRL_S1,
+ 		.code = 0x4,
+ 	},
++*/
+ };
+ #define PME_SPARC_ULTRA3I_EVENT_COUNT	   (sizeof(ultra3i_pe)/sizeof(sparc_entry_t))
+--- a/lib/events/sparc_ultra3plus_events.h
++++ b/lib/events/sparc_ultra3plus_events.h
+@@ -419,12 +419,14 @@ static const sparc_entry_t ultra3plus_pe
+ 	},
+ 
+ 	/* PIC1 events specific to UltraSPARC-III+/IIIi processors */
++/* conflicting .code 0x4
+ 	{
+ 		.name = "Re_DC_missovhd",
+ 		.desc = "Used to measure D-cache stall counts separately for L2-cache hits and misses.  This counter is used with the recirculation and cache access events to separately calculate the D-cache loads that hit and miss the L2-cache",
+ 		.ctrl = PME_CTRL_S1,
+ 		.code = 0x4,
+ 	},
++*/
+ 
+ 	/* PIC1 events specific to UltraSPARC-III+ processors */
+ 	{

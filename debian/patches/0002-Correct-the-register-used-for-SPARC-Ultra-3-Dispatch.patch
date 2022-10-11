@@ -1,0 +1,54 @@
+From 42f075551a5d9cc06c7ea197f544469bc4913374 Mon Sep 17 00:00:00 2001
+From: William Cohen <wcohen@redhat.com>
+Date: Wed, 10 Jan 2018 14:36:14 -0500
+Subject: [PATCH 2/2] Correct the register used for SPARC Ultra 3
+ Dispatch0_rs_mispred event.
+
+---
+ lib/events/sparc_ultra3_events.h     | 2 +-
+ lib/events/sparc_ultra3i_events.h    | 2 +-
+ lib/events/sparc_ultra3plus_events.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/events/sparc_ultra3_events.h b/lib/events/sparc_ultra3_events.h
+index c19097d..807cefa 100644
+--- a/lib/events/sparc_ultra3_events.h
++++ b/lib/events/sparc_ultra3_events.h
+@@ -149,7 +149,7 @@ static const sparc_entry_t ultra3_pe[] = {
+ 	{
+ 		.name = "Dispatch0_rs_mispred",
+ 		.desc = "I-buffer is empty due to a Return Address Stack misprediction",
+-		.ctrl = PME_CTRL_S0,
++		.ctrl = PME_CTRL_S1,
+ 		.code = 0x4,
+ 	},
+ 	{
+diff --git a/lib/events/sparc_ultra3i_events.h b/lib/events/sparc_ultra3i_events.h
+index f81213e..8585f90 100644
+--- a/lib/events/sparc_ultra3i_events.h
++++ b/lib/events/sparc_ultra3i_events.h
+@@ -149,7 +149,7 @@ static const sparc_entry_t ultra3i_pe[] = {
+ 	{
+ 		.name = "Dispatch0_rs_mispred",
+ 		.desc = "I-buffer is empty due to a Return Address Stack misprediction",
+-		.ctrl = PME_CTRL_S0,
++		.ctrl = PME_CTRL_S1,
+ 		.code = 0x4,
+ 	},
+ 	{
+diff --git a/lib/events/sparc_ultra3plus_events.h b/lib/events/sparc_ultra3plus_events.h
+index b1dc8ca..5a3bea5 100644
+--- a/lib/events/sparc_ultra3plus_events.h
++++ b/lib/events/sparc_ultra3plus_events.h
+@@ -149,7 +149,7 @@ static const sparc_entry_t ultra3plus_pe[] = {
+ 	{
+ 		.name = "Dispatch0_rs_mispred",
+ 		.desc = "I-buffer is empty due to a Return Address Stack misprediction",
+-		.ctrl = PME_CTRL_S0,
++		.ctrl = PME_CTRL_S1,
+ 		.code = 0x4,
+ 	},
+ 	{
+-- 
+2.14.3
+

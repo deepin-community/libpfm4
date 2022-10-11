@@ -1,0 +1,15 @@
+Author: Andreas Beckmann <anbe@debian.org>
+Description: do not use __DATE__
+Forwarded: not-needed
+
+--- a/perf_examples/rtop.c
++++ b/perf_examples/rtop.c
+@@ -502,7 +502,7 @@ main(int argc, char **argv)
+ 				exit(0);
+ 			case 2:
+ 			case 'V':
+-				printf("rtop version " RTOP_VERSION " Date: " __DATE__ "\n"
++				printf("rtop version " RTOP_VERSION /* " Date: " __DATE__ */ "\n"
+ 					"Copyright (C) 2009 Google, Inc\n");
+ 				exit(0);
+ 			case 3:

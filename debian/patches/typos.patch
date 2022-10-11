@@ -1,0 +1,211 @@
+Author: Andreas Beckmann <anbe@debian.org>
+Description: fix typos found by Lintian
+
+--- a/lib/events/intel_bdw_events.h
++++ b/lib/events/intel_bdw_events.h
+@@ -2248,7 +2248,7 @@ static const intel_x86_umask_t bdw_ept[]
+ 
+ static const intel_x86_umask_t bdw_arith[]={
+    { .uname  = "FPU_DIV_ACTIVE",
+-     .udesc  = "Cycles when divider is busy execuing divide operations",
++     .udesc  = "Cycles when divider is busy executing divide operations",
+      .ucode = 0x0100,
+      .uflags= INTEL_X86_DFL,
+    },
+--- a/lib/events/power8_events.h
++++ b/lib/events/power8_events.h
+@@ -1691,8 +1691,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_DATA_ALL_FROM_L2MISS_MOD ] = {
+ 	.pme_name = "PM_DATA_ALL_FROM_L2MISS_MOD",
+ 	.pme_code = 0x61c04e,
+-	.pme_short_desc = "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either demand loads or data prefetch",
+-	.pme_long_desc = "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1",
++	.pme_short_desc = "The processor's data cache was reloaded from a location other than the local core's L2 due to either demand loads or data prefetch",
++	.pme_long_desc = "The processor's data cache was reloaded from a location other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1",
+ },
+ [ POWER8_PME_PM_DATA_ALL_FROM_L2_DISP_CONFLICT_LDHITST ] = {
+ 	.pme_name = "PM_DATA_ALL_FROM_L2_DISP_CONFLICT_LDHITST",
+@@ -1751,8 +1751,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_DATA_ALL_FROM_L3MISS_MOD ] = {
+ 	.pme_name = "PM_DATA_ALL_FROM_L3MISS_MOD",
+ 	.pme_code = 0x64c04e,
+-	.pme_short_desc = "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either demand loads or data prefetch",
+-	.pme_long_desc = "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1",
++	.pme_short_desc = "The processor's data cache was reloaded from a location other than the local core's L3 due to either demand loads or data prefetch",
++	.pme_long_desc = "The processor's data cache was reloaded from a location other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1",
+ },
+ [ POWER8_PME_PM_DATA_ALL_FROM_L3_DISP_CONFLICT ] = {
+ 	.pme_name = "PM_DATA_ALL_FROM_L3_DISP_CONFLICT",
+@@ -1931,8 +1931,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_DATA_FROM_L2MISS_MOD ] = {
+ 	.pme_name = "PM_DATA_FROM_L2MISS_MOD",
+ 	.pme_code = 0x1c04e,
+-	.pme_short_desc = "The processor's data cache was reloaded from a localtion other than the local core's L2 due to a demand load",
+-	.pme_long_desc = "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1.",
++	.pme_short_desc = "The processor's data cache was reloaded from a location other than the local core's L2 due to a demand load",
++	.pme_long_desc = "The processor's data cache was reloaded from a location other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1.",
+ },
+ [ POWER8_PME_PM_DATA_FROM_L2_DISP_CONFLICT_LDHITST ] = {
+ 	.pme_name = "PM_DATA_FROM_L2_DISP_CONFLICT_LDHITST",
+@@ -1997,8 +1997,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_DATA_FROM_L3MISS_MOD ] = {
+ 	.pme_name = "PM_DATA_FROM_L3MISS_MOD",
+ 	.pme_code = 0x4c04e,
+-	.pme_short_desc = "The processor's data cache was reloaded from a localtion other than the local core's L3 due to a demand load",
+-	.pme_long_desc = "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1.",
++	.pme_short_desc = "The processor's data cache was reloaded from a location other than the local core's L3 due to a demand load",
++	.pme_long_desc = "The processor's data cache was reloaded from a location other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1.",
+ },
+ [ POWER8_PME_PM_DATA_FROM_L3_DISP_CONFLICT ] = {
+ 	.pme_name = "PM_DATA_FROM_L3_DISP_CONFLICT",
+@@ -2327,8 +2327,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_DPTEG_FROM_L2MISS ] = {
+ 	.pme_name = "PM_DPTEG_FROM_L2MISS",
+ 	.pme_code = 0x1e04e,
+-	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a data side request",
+-	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a data side request.",
++	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a data side request",
++	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a data side request.",
+ },
+ [ POWER8_PME_PM_DPTEG_FROM_L2_DISP_CONFLICT_LDHITST ] = {
+ 	.pme_name = "PM_DPTEG_FROM_L2_DISP_CONFLICT_LDHITST",
+@@ -2387,8 +2387,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_DPTEG_FROM_L3MISS ] = {
+ 	.pme_name = "PM_DPTEG_FROM_L3MISS",
+ 	.pme_code = 0x4e04e,
+-	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a data side request",
+-	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a data side request.",
++	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a data side request",
++	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a data side request.",
+ },
+ [ POWER8_PME_PM_DPTEG_FROM_L3_DISP_CONFLICT ] = {
+ 	.pme_name = "PM_DPTEG_FROM_L3_DISP_CONFLICT",
+@@ -3083,8 +3083,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_INST_ALL_FROM_L2MISS ] = {
+ 	.pme_name = "PM_INST_ALL_FROM_L2MISS",
+ 	.pme_code = 0x51404e,
+-	.pme_short_desc = "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to instruction fetches and prefetches",
+-	.pme_long_desc = "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1",
++	.pme_short_desc = "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to instruction fetches and prefetches",
++	.pme_long_desc = "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1",
+ },
+ [ POWER8_PME_PM_INST_ALL_FROM_L2_DISP_CONFLICT_LDHITST ] = {
+ 	.pme_name = "PM_INST_ALL_FROM_L2_DISP_CONFLICT_LDHITST",
+@@ -3143,8 +3143,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_INST_ALL_FROM_L3MISS_MOD ] = {
+ 	.pme_name = "PM_INST_ALL_FROM_L3MISS_MOD",
+ 	.pme_code = 0x54404e,
+-	.pme_short_desc = "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to a instruction fetch",
+-	.pme_long_desc = "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1",
++	.pme_short_desc = "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to a instruction fetch",
++	.pme_long_desc = "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1",
+ },
+ [ POWER8_PME_PM_INST_ALL_FROM_L3_DISP_CONFLICT ] = {
+ 	.pme_name = "PM_INST_ALL_FROM_L3_DISP_CONFLICT",
+@@ -3335,8 +3335,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_INST_FROM_L2MISS ] = {
+ 	.pme_name = "PM_INST_FROM_L2MISS",
+ 	.pme_code = 0x1404e,
+-	.pme_short_desc = "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to an instruction fetch (not prefetch)",
+-	.pme_long_desc = "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1 .",
++	.pme_short_desc = "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to an instruction fetch (not prefetch)",
++	.pme_long_desc = "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1 .",
+ },
+ [ POWER8_PME_PM_INST_FROM_L2_DISP_CONFLICT_LDHITST ] = {
+ 	.pme_name = "PM_INST_FROM_L2_DISP_CONFLICT_LDHITST",
+@@ -3401,8 +3401,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_INST_FROM_L3MISS_MOD ] = {
+ 	.pme_name = "PM_INST_FROM_L3MISS_MOD",
+ 	.pme_code = 0x4404e,
+-	.pme_short_desc = "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to a instruction fetch",
+-	.pme_long_desc = "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1 .",
++	.pme_short_desc = "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to a instruction fetch",
++	.pme_long_desc = "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1 .",
+ },
+ [ POWER8_PME_PM_INST_FROM_L3_DISP_CONFLICT ] = {
+ 	.pme_name = "PM_INST_FROM_L3_DISP_CONFLICT",
+@@ -3593,8 +3593,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_IPTEG_FROM_L2MISS ] = {
+ 	.pme_name = "PM_IPTEG_FROM_L2MISS",
+ 	.pme_code = 0x1504e,
+-	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a instruction side request",
+-	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a instruction side request.",
++	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a instruction side request",
++	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a instruction side request.",
+ },
+ [ POWER8_PME_PM_IPTEG_FROM_L2_DISP_CONFLICT_LDHITST ] = {
+ 	.pme_name = "PM_IPTEG_FROM_L2_DISP_CONFLICT_LDHITST",
+@@ -3653,8 +3653,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_IPTEG_FROM_L3MISS ] = {
+ 	.pme_name = "PM_IPTEG_FROM_L3MISS",
+ 	.pme_code = 0x4504e,
+-	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a instruction side request",
+-	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a instruction side request.",
++	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a instruction side request",
++	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a instruction side request.",
+ },
+ [ POWER8_PME_PM_IPTEG_FROM_L3_DISP_CONFLICT ] = {
+ 	.pme_name = "PM_IPTEG_FROM_L3_DISP_CONFLICT",
+@@ -5453,8 +5453,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_MRK_DATA_FROM_L2MISS_CYC ] = {
+ 	.pme_name = "PM_MRK_DATA_FROM_L2MISS_CYC",
+ 	.pme_code = 0x4c12e,
+-	.pme_short_desc = "Duration in cycles to reload from a localtion other than the local core's L2 due to a marked load",
+-	.pme_long_desc = "Duration in cycles to reload from a localtion other than the local core's L2 due to a marked load.",
++	.pme_short_desc = "Duration in cycles to reload from a location other than the local core's L2 due to a marked load",
++	.pme_long_desc = "Duration in cycles to reload from a location other than the local core's L2 due to a marked load.",
+ },
+ [ POWER8_PME_PM_MRK_DATA_FROM_L2_CYC ] = {
+ 	.pme_name = "PM_MRK_DATA_FROM_L2_CYC",
+@@ -5567,14 +5567,14 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_MRK_DATA_FROM_L3MISS ] = {
+ 	.pme_name = "PM_MRK_DATA_FROM_L3MISS",
+ 	.pme_code = 0x201e4,
+-	.pme_short_desc = "The processor's data cache was reloaded from a localtion other than the local core's L3 due to a marked load",
+-	.pme_long_desc = "The processor's data cache was reloaded from a localtion other than the local core's L3 due to a marked load.",
++	.pme_short_desc = "The processor's data cache was reloaded from a location other than the local core's L3 due to a marked load",
++	.pme_long_desc = "The processor's data cache was reloaded from a location other than the local core's L3 due to a marked load.",
+ },
+ [ POWER8_PME_PM_MRK_DATA_FROM_L3MISS_CYC ] = {
+ 	.pme_name = "PM_MRK_DATA_FROM_L3MISS_CYC",
+ 	.pme_code = 0x2d12e,
+-	.pme_short_desc = "Duration in cycles to reload from a localtion other than the local core's L3 due to a marked load",
+-	.pme_long_desc = "Duration in cycles to reload from a localtion other than the local core's L3 due to a marked load.",
++	.pme_short_desc = "Duration in cycles to reload from a location other than the local core's L3 due to a marked load",
++	.pme_long_desc = "Duration in cycles to reload from a location other than the local core's L3 due to a marked load.",
+ },
+ [ POWER8_PME_PM_MRK_DATA_FROM_L3_CYC ] = {
+ 	.pme_name = "PM_MRK_DATA_FROM_L3_CYC",
+@@ -5819,8 +5819,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_MRK_DPTEG_FROM_L2MISS ] = {
+ 	.pme_name = "PM_MRK_DPTEG_FROM_L2MISS",
+ 	.pme_code = 0x1f14e,
+-	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a marked data side request",
+-	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a marked data side request.",
++	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a marked data side request",
++	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a marked data side request.",
+ },
+ [ POWER8_PME_PM_MRK_DPTEG_FROM_L2_DISP_CONFLICT_LDHITST ] = {
+ 	.pme_name = "PM_MRK_DPTEG_FROM_L2_DISP_CONFLICT_LDHITST",
+@@ -5879,8 +5879,8 @@ static const pme_power_entry_t power8_pe
+ [ POWER8_PME_PM_MRK_DPTEG_FROM_L3MISS ] = {
+ 	.pme_name = "PM_MRK_DPTEG_FROM_L3MISS",
+ 	.pme_code = 0x4f14e,
+-	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a marked data side request",
+-	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a marked data side request.",
++	.pme_short_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a marked data side request",
++	.pme_long_desc = "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a marked data side request.",
+ },
+ [ POWER8_PME_PM_MRK_DPTEG_FROM_L3_DISP_CONFLICT ] = {
+ 	.pme_name = "PM_MRK_DPTEG_FROM_L3_DISP_CONFLICT",
+--- a/lib/events/power9_events.h
++++ b/lib/events/power9_events.h
+@@ -3206,7 +3206,7 @@ static const pme_power_entry_t power9_pe
+ 	.pme_name = "PM_ITLB_MISS",
+ 	.pme_code = 0x00000400FC,
+ 	.pme_short_desc = "ITLB Reloaded.",
+-	.pme_long_desc = "ITLB Reloaded. Counts 1 per ITLB miss for HPT but multiple for radix depending on number of levels traveresed",
++	.pme_long_desc = "ITLB Reloaded. Counts 1 per ITLB miss for HPT but multiple for radix depending on number of levels traversed",
+ },
+ [ POWER9_PME_PM_L1_DCACHE_RELOADED_ALL ] = {
+ 	.pme_name = "PM_L1_DCACHE_RELOADED_ALL",
