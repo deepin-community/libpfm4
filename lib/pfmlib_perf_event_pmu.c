@@ -34,13 +34,6 @@
 #include <sys/param.h>
 #endif
 
-/*
- * looks like several distributions do not have
- * the latest libc with openat support, so disable
- * for now
- */
-#undef HAS_OPENAT
-
 #include "pfmlib_priv.h"
 #include "pfmlib_perf_event_priv.h"
 
@@ -58,6 +51,7 @@ typedef struct {
 	const char	*name;			/* name */
 	const char	*desc;			/* description */
 	const char	*equiv;			/* event is aliased to */
+	const char	*pmu;			/* PMU instance (sysfs) */
 	uint64_t	id;			/* perf_hw_id or equivalent */
 	int		modmsk;			/* modifiers bitmask */
 	int		type;			/* perf_type_id */
@@ -102,11 +96,21 @@ typedef struct {
 	  .umask_ovfl_idx = PERF_INVAL_OVFL_IDX,\
 	}
 
+#define PCL_EVTR(f, t, a, d)\
+	{ .name = #f,		\
+	  .id = a,		\
+	  .type = t,		\
+	  .desc = d,		\
+	  .umask_ovfl_idx = PERF_INVAL_OVFL_IDX,\
+	}
+
+
 #define PCL_EVT_HW(n) PCL_EVT(PERF_COUNT_HW_##n, PERF_TYPE_HARDWARE, PERF_ATTR_HW, 0)
 #define PCL_EVT_SW(n) PCL_EVT(PERF_COUNT_SW_##n, PERF_TYPE_SOFTWARE, PERF_ATTR_SW, 0)
 #define PCL_EVT_AHW(n, a) PCL_EVTA(n, PERF_TYPE_HARDWARE, PERF_ATTR_HW, PERF_COUNT_HW_##a, 0)
 #define PCL_EVT_ASW(n, a) PCL_EVTA(n, PERF_TYPE_SOFTWARE, PERF_ATTR_SW, PERF_COUNT_SW_##a, 0)
 #define PCL_EVT_HW_FL(n, fl) PCL_EVT(PERF_COUNT_HW_##n, PERF_TYPE_HARDWARE, PERF_ATTR_HW, fl)
+#define PCL_EVT_RAW(n, e, u, d) PCL_EVTR(n, PERF_TYPE_RAW, (u) << 8 | (e), d)
 
 #ifndef MAXPATHLEN
 #define MAXPATHLEN	1024
@@ -209,8 +213,7 @@ get_debugfs_mnt(void)
 			break;
 		}
 	}
-	if (buffer)
-		free(buffer);
+	free(buffer);
 
 	fclose(fp);
 
@@ -242,7 +245,10 @@ perf_table_clone(void)
 	}
 	return addr;
 }
-
+static inline int perf_pe_allocated(void)
+{
+	return perf_pe != perf_static_events;
+}
 /*
  * allocate space for one new event in event table
  *
@@ -254,18 +260,40 @@ static perf_event_t *
 perf_table_alloc_event(void)
 {
 	perf_event_t *new_pe;
+	perf_event_t *p;
+	size_t num_free;
 
+	/*
+	 * if we need to allocate an event and we have not yet
+	 * cloned the static events, then clone them
+	 */
+	if (!perf_pe_allocated()) {
+		DPRINT("cloning static event table\n");
+		p = perf_table_clone();
+		if (!p)
+			return NULL;
+		perf_pe = p;
+	}
 retry:
 	if (perf_pe_free < perf_pe_end)
 		return perf_pe_free++;
 
 	perf_pe_count += PERF_ALLOC_EVENT_COUNT;
 	
+	/*
+	 * compute number of free events left
+	 * before realloc() to avoid compiler warning (use-after-free)
+	 * even though we are simply doing pointer arithmetic and not
+	 * dereferencing the perf_pe after realloc when it may be stale
+	 * in case the memory was moved.
+	 */
+	num_free = perf_pe_free - perf_pe;
+
 	new_pe = realloc(perf_pe, perf_pe_count * sizeof(perf_event_t));
 	if (!new_pe) 
 		return NULL;
 	
-	perf_pe_free = new_pe + (perf_pe_free - perf_pe);
+	perf_pe_free = new_pe + num_free;
 	perf_pe_end = perf_pe_free + PERF_ALLOC_EVENT_COUNT;
 	perf_pe = new_pe;
 
@@ -290,18 +318,27 @@ static perf_umask_t *
 perf_table_alloc_umask(void)
 {
 	perf_umask_t *new_um;
+	size_t num_free;
 
 retry:
 	if (perf_um_free < perf_um_end)
 		return perf_um_free++;
 
 	perf_um_count += PERF_ALLOC_UMASK_COUNT;
-	
+
+	/*
+	 * compute number of free unmasks left
+	 * before realloc() to avoid compiler warning (use-after-free)
+	 * even though we are simply doing pointer arithmetic and not
+	 * dereferencing the perf_um after realloc when it may be stale
+	 * in case the memory was moved.
+	 */
+	num_free = perf_um_free - perf_um;
 	new_um = realloc(perf_um, perf_um_count * sizeof(*new_um));
 	if (!new_um) 
 		return NULL;
 	
-	perf_um_free = new_um + (perf_um_free - perf_um);
+	perf_um_free = new_um + num_free;
 	perf_um_end = perf_um_free + PERF_ALLOC_UMASK_COUNT;
 	perf_um = new_um;
 
@@ -317,13 +354,14 @@ gen_tracepoint_table(void)
 {
 	DIR *dir1, *dir2;
 	struct dirent *d1, *d2;
-	perf_event_t *p;
+	perf_event_t *p = NULL;
 	perf_umask_t *um;
-	char d2path[MAXPATHLEN];
+	char POTENTIALLY_UNUSED d2path[MAXPATHLEN];
 	char idpath[MAXPATHLEN];
 	char id_str[32];
 	uint64_t id;
 	int fd, err;
+	int POTENTIALLY_UNUSED dir1_fd;
 	int POTENTIALLY_UNUSED dir2_fd;
 	int reuse_event = 0;
 	int numasks;
@@ -337,11 +375,17 @@ gen_tracepoint_table(void)
 	strncat(debugfs_mnt, "/tracing/events", MAXPATHLEN-1);
 	debugfs_mnt[MAXPATHLEN-1]= '\0';
 
+#ifdef HAS_OPENAT
+	dir1_fd = open(debugfs_mnt, O_DIRECTORY);
+	if (dir1_fd < 0)
+		return;
+
+	dir1 = fdopendir(dir1_fd);
+#else
 	dir1 = opendir(debugfs_mnt);
 	if (!dir1)
 		return;
-
-	p = perf_table_clone();
+#endif
 
 	err = 0;
 	while((d1 = readdir(dir1)) && err >= 0) {
@@ -352,6 +396,16 @@ gen_tracepoint_table(void)
 		if (!strcmp(d1->d_name, ".."))
 			continue;
 
+#ifdef HAS_OPENAT
+		/* fails if it cannot open */
+		dir2_fd = openat(dir1_fd, d1->d_name, O_DIRECTORY);
+		if (dir2_fd < 0)
+			continue;
+
+		dir2 = fdopendir(dir2_fd);
+		if (!dir2)
+			continue;
+#else
 		retlen = snprintf(d2path, MAXPATHLEN, "%s/%s", debugfs_mnt, d1->d_name);
 		/* ensure generated d2path string is valid */
 		if (retlen <= 0 || MAXPATHLEN <= retlen)
@@ -361,7 +415,7 @@ gen_tracepoint_table(void)
 		dir2 = opendir(d2path);
 		if (!dir2)
 			continue;
-
+#endif
 		dir2_fd = dirfd(dir2);
 
 		/*
@@ -405,14 +459,14 @@ gen_tracepoint_table(void)
 			retlen = snprintf(idpath, MAXPATHLEN, "%s/id", d2->d_name);
 			/* ensure generated d2path string is valid */
 			if (retlen <= 0 || MAXPATHLEN <= retlen)
-			continue;
+				continue;
 
                         fd = openat(dir2_fd, idpath, O_RDONLY);
 #else
                         retlen = snprintf(idpath, MAXPATHLEN, "%s/%s/id", d2path, d2->d_name);
 			/* ensure generated d2path string is valid */
 			if (retlen <= 0 || MAXPATHLEN <= retlen)
-			continue;
+				continue;
 
                         fd = open(idpath, O_RDONLY);
 #endif
@@ -468,7 +522,7 @@ gen_tracepoint_table(void)
 		 */
 		if (!numasks) {
 			free(tracepoint_name);
-			reuse_event =1;
+			reuse_event = 1;
 			continue;
 		}
 
@@ -497,11 +551,52 @@ pfm_perf_detect(void *this)
 #endif
 }
 
+/*
+ * checks that the event is exported by the PMU specified by the event entry
+ * This code assumes the PMU type is RAW, which requires an encoding exported
+ * via sysfs.
+ */
+static int
+event_exist(perf_event_t *e)
+{
+	char buf[PATH_MAX];
+
+	snprintf(buf, PATH_MAX, "/sys/devices/%s/events/%s", e->pmu ? e->pmu : "cpu", e->name);
+
+	return access(buf, F_OK) == 0;
+}
+
+static void
+add_optional_events(void)
+{
+	perf_event_t *ent, *e;
+	size_t i;
+
+	for (i = 0; i < PME_PERF_EVENT_OPT_COUNT; i++) {
+
+		e = perf_optional_events + i;
+
+		if (!event_exist(e)) {
+			DPRINT("perf::%s not available\n", e->name);
+			continue;
+		}
+
+		ent = perf_table_alloc_event();
+		if (!ent)
+			break;
+		memcpy(ent, e, sizeof(*e));
+
+		perf_nevents++;
+	}
+}
+
 static int
 pfm_perf_init(void *this)
 {
 	pfmlib_pmu_t *pmu = this;
+
 	perf_pe = perf_static_events;
+
 	/*
 	 * we force the value of pme_count by hand because
 	 * the library could be initialized mutltiple times
@@ -512,6 +607,10 @@ pfm_perf_init(void *this)
 
 	/* must dynamically add tracepoints */
 	gen_tracepoint_table();
+
+	/* must dynamically add optional hw events */
+	add_optional_events();
+
 	/* dynamically patch supported plm based on CORE PMU plm */
 	pmu->supported_plm = pfm_perf_pmu_supported_plm(pmu);
 
@@ -695,6 +794,7 @@ pfm_perf_get_encoding(void *this, pfmlib_event_desc_t *e)
 		break;
 	case PERF_TYPE_HARDWARE:
 	case PERF_TYPE_SOFTWARE:
+	case PERF_TYPE_RAW:
 		ret = PFM_SUCCESS;
 		e->codes[0] = perf_pe[e->event].id;
 		e->count = 1;
@@ -724,6 +824,7 @@ pfm_perf_get_perf_encoding(void *this, pfmlib_event_desc_t *e)
 		break;
 	case PERF_TYPE_HARDWARE:
 	case PERF_TYPE_SOFTWARE:
+	case PERF_TYPE_RAW:
 		ret = PFM_SUCCESS;
 		e->codes[0] = perf_pe[e->event].id;
 		e->count = 1;
@@ -798,14 +899,15 @@ pfm_perf_terminate(void *this)
 	perf_event_t *p;
 	int i, j;
 
-	if (!(perf_pe && perf_um))
+	/* if perf_pe not allocated then perf_um not allocated */
+	if (!perf_pe_allocated())
 		return;
 
 	/*
 	 * free tracepoints name + unit mask names
 	 * which are dynamically allocated
 	 */
-	for (i=0; i < perf_nevents; i++) {
+	for (i = 0; i < perf_nevents; i++) {
 		p = &perf_pe[i];
 
 		if (p->type != PERF_TYPE_TRACEPOINT)
@@ -822,7 +924,7 @@ pfm_perf_terminate(void *this)
 		 * first PERF_MAX_UMASKS are pre-allocated
 		 * the rest is in a separate dynamic table
 		 */
-		for (j=0; j < p->numasks; j++) {
+		for (j = 0; j < p->numasks; j++) {
 			if (j == PERF_MAX_UMASKS)
 				break;
 			free((void *)p->umasks[j].uname);
@@ -831,9 +933,10 @@ pfm_perf_terminate(void *this)
 	/*
 	 * perf_pe is systematically allocated
 	 */
-	free(perf_pe);
-	perf_pe = NULL;
-	perf_pe_free = perf_pe_end = NULL;
+	if (perf_pe_allocated()) {
+		free(perf_pe);
+		perf_pe = perf_pe_free = perf_pe_end = NULL;
+	}
 
 	if (perf_um) {
 		int n;
@@ -841,9 +944,8 @@ pfm_perf_terminate(void *this)
 		 * free the dynamic umasks' uname
 		 */
 		n = perf_um_free - perf_um;
-		for(i=0; i < n; i++) {
+		for(i=0; i < n; i++)
 			free((void *)(perf_um[i].uname));
-		}
 		free(perf_um);
 		perf_um = NULL;
 		perf_um_free = perf_um_end = NULL;

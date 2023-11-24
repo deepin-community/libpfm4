@@ -1,0 +1,31 @@
+Author: Samuel Thibault <sthibault@debian.org>
+Description: Cope with empty /proc/cpuinfo file
+ the root cause for the empty /proc/cpuinfo is a bug in lxcfs:
+ https://bugs.debian.org/1036818
+ https://github.com/lxc/lxcfs/issues/608
+Bug-Debian: https://bugs.debian.org/1043238
+Forwarded: https://sourceforge.net/p/perfmon2/libpfm4/merge-requests/23/
+
+--- a/lib/pfmlib_common.c
++++ b/lib/pfmlib_common.c
+@@ -791,7 +791,8 @@ pfmlib_getl(char **buffer, size_t *len,
+ 		if (c == '\n')
+ 			break;
+ 	}
+-	b[i] = '\0';
++       if (c != EOF)
++               b[i] = '\0';
+ 	return c != EOF ? 0 : -1;
+ }
+ 
+--- a/lib/pfmlib_arm.c
++++ b/lib/pfmlib_arm.c
+@@ -97,6 +97,8 @@ pfmlib_getcpuinfo_attr(const char *attr,
+ 		if (!strncmp(attr, buffer, attr_len))
+ 			break;
+ 	}
++       if (!value)
++               goto error;
+ 	strncpy(ret_buf, value, maxlen-1);
+ 	ret_buf[maxlen-1] = '\0';
+ 	ret = 0;

@@ -103,6 +103,17 @@ static const intel_x86_umask_t skl_br_misp_retired[]={
     .ucode  = 0x200,
     .uflags = INTEL_X86_NCOMBO | INTEL_X86_PEBS,
   },
+  { .uname   = "RET",
+    .udesc   = "This event counts the number of mispredicted ret instructions retired.",
+    .ucode   = 0x0800ull,
+    .uflags  = INTEL_X86_NCOMBO | INTEL_X86_PEBS,
+  },
+  { .uname   = "NEAR_RETURN",
+    .udesc   = "This event counts the number of mispredicted ret instructions retired.",
+    .uequiv  = "RET",
+    .ucode   = 0x0800ull,
+    .uflags  = INTEL_X86_NCOMBO | INTEL_X86_PEBS,
+  },
 };
 
 static const intel_x86_umask_t skl_cpu_clk_thread_unhalted[]={
@@ -576,7 +587,7 @@ static const intel_x86_umask_t skl_sq_misc[]={
 
 static const intel_x86_umask_t skl_l1d_pend_miss[]={
   { .uname = "PENDING",
-    .udesc  = "Cycles with L1D load misses outstanding",
+    .udesc  = "L1D misses outstanding duration in core cycles",
     .ucode  = 0x100,
     .ucntmsk = 0x4,
     .uflags = INTEL_X86_DFL,
@@ -587,7 +598,7 @@ static const intel_x86_umask_t skl_l1d_pend_miss[]={
     .uflags = INTEL_X86_NCOMBO,
   },
   { .uname = "PENDING_CYCLES",
-    .udesc  = "Cycles with L1D load misses outstanding",
+    .udesc  = "Cycles with L1D misses outstanding",
     .ucode  = 0x100 | (1 << INTEL_X86_CMASK_BIT), /* cnt=1 */
     .uequiv = "PENDING:c=1",
     .uflags = INTEL_X86_NCOMBO,
@@ -999,6 +1010,11 @@ static const intel_x86_umask_t skl_mem_inst_retired[]={
     .udesc  = "All store uops retired",
     .ucode  = 0x8200,
     .uflags = INTEL_X86_NCOMBO | INTEL_X86_PEBS,
+  },
+  { .uname = "ANY",
+    .udesc  = "All retired memory instructions",
+    .ucode  = 0x8300,
+    .uflags = INTEL_X86_NCOMBO | INTEL_X86_PEBS | INTEL_X86_DFL,
   },
 };
 
@@ -2144,8 +2160,13 @@ static const intel_x86_umask_t skl_exe_activity[]={
 
 static const intel_x86_umask_t skl_frontend_retired[]={
    { .uname  = "DSB_MISS",
-     .udesc  = "Retired instructions experiencing decode stream buffer (DSB) miss",
+     .udesc  = "Retired instructions experiencing a critical decode stream buffer (DSB) miss. A critical DSB miss can cause stalls in the backend",
      .ucode = 0x11 << 8,
+     .uflags= INTEL_X86_NCOMBO | INTEL_X86_PEBS,
+   },
+   { .uname  = "ANY_DSB_MISS",
+     .udesc  = "Retired Instructions experiencing a decode stream buffer (DSB) miss.",
+     .ucode = 0x1 << 8,
      .uflags= INTEL_X86_NCOMBO | INTEL_X86_PEBS,
    },
    { .uname  = "ITLB_MISS",
@@ -2209,8 +2230,8 @@ static const intel_x86_umask_t skl_offcore_requests_buffer[]={
 static const intel_x86_umask_t skl_mem_load_misc_retired[]={
    { .uname  = "UC",
      .udesc  = "Number of uncached load retired",
-     .ucode = 0x400,
-     .uflags= INTEL_X86_PEBS | INTEL_X86_DFL,
+     .ucode  = 0x400,
+     .uflags = INTEL_X86_PEBS | INTEL_X86_DFL,
    },
 };
 
@@ -2319,6 +2340,19 @@ static const intel_x86_umask_t skl_partial_rat_stalls[]={
    },
 };
 
+static const intel_x86_umask_t skl_br_misp_exec[]={
+   { .uname  = "INDIRECT",
+     .udesc  = "Speculative mispredicted indirect branches",
+     .ucode  = 0xe400,
+     .uflags = INTEL_X86_NCOMBO,
+   },
+   { .uname  = "ALL_BRANCHES",
+     .udesc  = "Speculative and retired mispredicted macro conditional branches",
+     .ucode  = 0xff00,
+     .uflags = INTEL_X86_NCOMBO | INTEL_X86_DFL,
+   },
+};
+
 static const intel_x86_entry_t intel_skl_pe[]={
   { .name   = "UNHALTED_CORE_CYCLES",
     .desc   = "Count core clock cycles whenever the clock signal on the specific core is running (not halted)",
@@ -2388,6 +2422,15 @@ static const intel_x86_entry_t intel_skl_pe[]={
     .modmsk = INTEL_V4_ATTRS,
     .numasks = LIBPFM_ARRAY_SIZE(skl_br_misp_retired),
     .umasks  = skl_br_misp_retired
+  },
+  { .name = "BR_MISP_EXEC",
+    .desc   = "Speculative mispredicted branches",
+    .code = 0x89,
+    .cntmsk = 0xff,
+    .ngrp = 1,
+    .modmsk = INTEL_V4_ATTRS,
+    .numasks = LIBPFM_ARRAY_SIZE(skl_br_misp_exec),
+    .umasks  = skl_br_misp_exec
   },
   { .name = "CPU_CLK_THREAD_UNHALTED",
     .desc   = "Count core clock cycles whenever the clock signal on the specific core is running (not halted)",

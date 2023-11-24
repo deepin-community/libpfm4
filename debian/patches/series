@@ -2,3 +2,4 @@
 sparc-disable-conflicting-code-4.patch
 reproducible.patch
 typos.patch
+empty-cpuinfo.patch

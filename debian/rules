@@ -16,12 +16,12 @@ CFLAGS	+= $(CPPFLAGS)
 # architecture mapping $(DEB_HOST_ARCH) => libpfm4 ARCH
 # in case that can't be derived from the cpu correctly
 # e.g. cross-compiling for a 32-bit architecture on a 64-bit cpu
+LIBPFM4_ARCH_amd64	 = x86_64
 LIBPFM4_ARCH_armel	 = arm
 LIBPFM4_ARCH_armhf	 = arm
-LIBPFM4_ARCH_i386	 = i386
 LIBPFM4_ARCH_ppc64el	 = powerpc
 
-LIBPFM4_ARCH_FLAG	 = $(foreach a,$(strip $(LIBPFM4_ARCH_$(DEB_HOST_ARCH))),ARCH=$a)
+LIBPFM4_ARCH_FLAG	 = ARCH=$(or $(LIBPFM4_ARCH_$(DEB_HOST_ARCH_CPU)),$(DEB_HOST_ARCH_CPU))
 
 %:
 	dh  $@

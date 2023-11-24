@@ -1,3 +1,66 @@
+libpfm4 (4.13.0+git15-gefd10fb-2) unstable; urgency=medium
+
+  [ Samuel Thibault ]
+  * Do not crash on empty /proc/cpuinfo.  (Closes: #1043238)
+
+ -- Andreas Beckmann <anbe@debian.org>  Tue, 05 Sep 2023 15:41:15 +0200
+
+libpfm4 (4.13.0+git15-gefd10fb-1) unstable; urgency=medium
+
+  * New upstream GIT snapshot.
+    - Improve Zen3/Zen4 detection.
+    - Add Intel EmeraldRapid core PMU support.
+
+ -- Andreas Beckmann <anbe@debian.org>  Thu, 17 Aug 2023 01:41:09 +0200
+
+libpfm4 (4.13.0-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Update Intel event tables.
+    - Add ARM v9 support basic infrastructure.
+    - Add ARM Neoverse V1/V2 core PMU support.
+  * Refresh patches.
+
+ -- Andreas Beckmann <anbe@debian.org>  Sat, 15 Apr 2023 11:16:32 +0200
+
+libpfm4 (4.12.1+git12-g678bca9-1) unstable; urgency=medium
+
+  [ Andreas Beckmann ]
+  * New upstream GIT snapshot.
+    - Add support for Zen4.
+  * Bump Standards-Version to 4.6.2. No changes needed.
+
+ -- Andreas Beckmann <anbe@debian.org>  Mon, 20 Feb 2023 10:30:29 +0100
+
+libpfm4 (4.12.1+git6-g8aaaf17-1) unstable; urgency=medium
+
+  [ Andreas Beckmann ]
+  * New upstream GIT snapshot.
+
+  [ Debian Janitor ]
+  * debian/copyright: use spaces rather than tabs to start continuation lines.
+  * Use secure URI in Homepage field.
+  * Fix day-of-week for changelog entries 10.1, 10.0, 4.0.
+
+ -- Andreas Beckmann <anbe@debian.org>  Wed, 16 Nov 2022 16:22:20 +0100
+
+libpfm4 (4.12.0-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Andreas Beckmann <anbe@debian.org>  Thu, 22 Sep 2022 17:12:28 +0200
+
+libpfm4 (4.11.1+git74-g5140ce5-1) unstable; urgency=medium
+
+  * New upstream GIT snapshot.
+    - Fix FTBFS with GCC 12.  (Closes: #1012985)
+  * Fix FTCBFS: Pass ARCH= for any architecture, thanks to Helmut Grohne.
+    (Closes: #971034)
+  * Bump Standards-Version to 4.6.1. No changes needed.
+  * typos.patch: Fix more typos found by Lintian.
+
+ -- Andreas Beckmann <anbe@debian.org>  Wed, 03 Aug 2022 16:47:55 +0200
+
 libpfm4 (4.11.1+git32-gd0b85fb-1) unstable; urgency=medium
 
   * New upstream GIT snapshot.
@@ -364,6 +427,60 @@ libpfm4 (4.3.0-1) unstable; urgency=low
 
  -- Vincent Danjean <vdanjean@debian.org>  Wed, 06 Mar 2013 10:27:13 +0100
 
+libpfm4 (13.0) unstable; urgency=low
+  * update Intel SKL/SKX/CLX event table
+  * add ARM Neoverse V2 core PMU support
+  * move ARM Neoverse N2 to ARMv9 support
+  * add ARM v9  support basic infrastructure
+  * add Arm Neoverse V1 core PMU support
+  * Update Intel SapphireRapid event table
+  * update Intel Icelake event table
+  * Update AMD Zen4 event table
+  * remove useless combination in AMD Zen4 packed_int_ops_retired event
+  * Fix AMD Zen4 cpu_family used in detection code
+  * Add AMD Zen4 core PMU support
+  * Correctly detect all AMD Zen3 processors
+  * fix CPU_CLK_UNHALTED.REF_DISTRIBUTED on Intel Icelake
+  * add missing break in amd64_get_revision()
+  * update Intel Skylake event table
+  * Fix typos in Intel Icelake event table
+  * Update Intel SapphireRapid event table
+  * update perf_event.h to Linux 5.18
+  * fix amd_get_revision() to identify AMD Zen3 uniquely
+
+ -- Stephane Eranian <eranian@gmail.com>  Tue, 28 Mar  2023 08:00:01 +0200
+
+libpfm4 (12.1) unstable; urgency=low
+  * fix debian changelog 12.0 entry order
+  * fix debian rules to build again
+
+ -- Stephane Eranian <eranian@gmail.com>  Tue, 20 Sep  2022 08:00:01 +0200
+
+libpfm4 (12.0) unstable; urgency=low
+  * Add IBM Power10 core PMU support
+  * Add Intel IcelakeX core PMU support
+  * Add Intel SapphireRapid core PMU support
+  * Add Intel SapphireRapid RAPL PMU support
+  * Update Intel Icelake RAPL PMU support
+  * Add support HiSilicon Kunpeng uncore PMUs
+  * Add support HiSilicon Kunpeng core PMU
+  * Remove arm_fujitsu_a64fx_support for ARM(32 bit)
+  * Update Intel Skylake event table
+  * Add Intel PERF_METRICS event support for Icelake
+  * Add support for ARM Neoverse N2 core PMU
+  * Add ARM SPE events for Neoverse N1 core PMU
+  * Add cgroup-switches software event
+  * Add Intel Tigerlake and Rocketlake core PMU support
+  * Add AMD64 Fam19h Zen3 L3 PMU support
+  * Add AMD64 Fam17h Zen2 RAPL support
+  * Add AMD64 Fam19h Zen3 core PMU support
+  * Add RAPL for AMD64 Fam19h Zen3 processor
+  * Update ARM N1 event table
+  * Update AMD Fam17h Zen2 event table
+  * s390: Update counter definition for IBM z16
+
+ -- Stephane Eranian <eranian@gmail.com>  Fri, 16 Sep  2022 12:00:01 +0200
+
 libpfm4 (11.1) unstable; urgency=low
   * Fix Makefile revision
   * Fix Fujitsu A64Fx man page install in ARM64 mode
@@ -391,7 +508,7 @@ libpfm4 (10.1) unstable; urgency=low
   * fix Cavium Thunder X2 build issues
   * Update Skylake event table
 
- -- Stephane Eranian <eranian@gmail.com>  Thu, 13 Jun  2018 23:40:01 +0200
+ -- Stephane Eranian <eranian@gmail.com>  Wed, 13 Jun 2018 23:40:01 +0200
 
 libpfm4 (10.0) unstable; urgency=low
   * add support for Skylake X uncore PMUs
@@ -399,7 +516,7 @@ libpfm4 (10.0) unstable; urgency=low
   * add support for Intel Knights Mill core PMU
   * various fixes and event table updates
 
- -- Stephane Eranian <eranian@gmail.com>  Thu, 6 Jun  2018 11:37:01 +0200
+ -- Stephane Eranian <eranian@gmail.com>  Wed, 06 Jun 2018 11:37:01 +0200
 
 libpfm4 (9.0) unstable; urgency=low
   * add support for Broadwell EP uncore PMUa
@@ -468,7 +585,7 @@ libpfm4 (4.0) unstable; urgency=low
   * New Intel Atom support
   * bug fixes
 
- -- Stephane Eranian <eranian@gmail.com>  Fri, 08 Jun 2013 18:45:01 +0200
+ -- Stephane Eranian <eranian@gmail.com>  Sat, 08 Jun 2013 18:45:01 +0200
 
 libpfm4 (3.0) unstable; urgency=low
 
