@@ -84,7 +84,7 @@ pfm_intel_x86_display_reg(void *this, pfmlib_event_desc_t *e)
 	if (pe[e->event].modmsk & _INTEL_X86_ATTR_T)
 		__pfm_vbprintf(" any=%d", reg.sel_anythr);
 
-	__pfm_vbprintf("]", e->fstr);
+	__pfm_vbprintf("]");
 
 	for (i = 1 ; i < e->count; i++)
 		__pfm_vbprintf(" [0x%"PRIx64"]", e->codes[i]);
@@ -551,7 +551,8 @@ pfm_intel_x86_encode_gen(void *this, pfmlib_event_desc_t *e)
 					umodmsk |= _INTEL_X86_ATTR_T;
 					break;
 				case INTEL_X86_ATTR_LDLAT: /* load latency */
-					if (ival < 3 || ival > 65535)
+					/* as per Intel SDM, lowest value is 1, 16-bit field */
+					if (ival < 1 || ival > 65535)
 						return PFM_ERR_ATTR_VAL;
 					ldlat = ival;
 					break;

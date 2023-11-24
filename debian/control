@@ -10,8 +10,8 @@ Build-Depends:
  libncurses-dev,
  swig,
 Rules-Requires-Root: no
-Standards-Version: 4.5.1
-Homepage: http://perfmon2.sourceforge.net/
+Standards-Version: 4.6.2
+Homepage: https://perfmon2.sourceforge.net/
 Vcs-Browser: https://salsa.debian.org/hpc-team/libpfm4
 Vcs-Git: https://salsa.debian.org/hpc-team/libpfm4.git
 

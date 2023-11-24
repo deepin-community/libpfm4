@@ -203,6 +203,11 @@ static int pfm_cpumcf_init(void *this)
 		ext_set = cpumcf_z15_counters;
 		ext_set_count = LIBPFM_ARRAY_SIZE(cpumcf_z15_counters);
 		break;
+	case 3931:  /* IBM Machine types 3931 and 3932 */
+	case 3932:
+		ext_set = cpumcf_z16_counters;
+		ext_set_count = LIBPFM_ARRAY_SIZE(cpumcf_z16_counters);
+		break;
 	default:
 		/* No extended counter set for this machine type or there
 		 * was an error retrieving the machine type */
@@ -356,6 +361,7 @@ pfmlib_pmu_t s390x_cpum_cf_support = {
 	.pmu	   = PFM_PMU_S390X_CPUM_CF,
 	.type	   = PFM_PMU_TYPE_CORE,
 	.flags	   = PFMLIB_PMU_FL_ARCH_DFL,
+	.supported_plm = PFM_PLM3,
 
 	.num_cntrs	 = 0,	  /* no general-purpose counters */
 	.num_fixed_cntrs = CPUMF_COUNTER_MAX,	/* fixed counters only */

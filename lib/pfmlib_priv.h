@@ -2,6 +2,9 @@
  * Copyright (c) 2002-2006 Hewlett-Packard Development Company, L.P.
  * Contributed by Stephane Eranian <eranian@hpl.hp.com>
  *
+ * Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES.
+ * Contributed by John Linford <jlinford@nvidia.com>
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -124,10 +127,18 @@ typedef struct {
 #define modx(atdesc, a, z)	(atdesc[(a)].z)
 #define attr(e, k)		((e)->pattrs + (e)->attrs[k].id)
 
+typedef struct pfmlib_node {
+	struct pfmlib_node *next;
+	struct pfmlib_node *prev;
+} pfmlib_node_t;
+
 typedef struct pfmlib_pmu {
 	const char 	*desc;			/* PMU description */
 	const char 	*name;			/* pmu short name */
 	const char	*perf_name;		/* perf_event pmu name (optional) */
+	pfmlib_node_t   node;			/* active list node */
+	struct pfmlib_pmu *next_active;		/* active PMU link list */
+	struct pfmlib_pmu *prev_active;		/* active PMU link list */
 	pfm_pmu_t	pmu;			/* PMU model */
 	int		pme_count;		/* number of events */
 	int		max_encoding;		/* max number of uint64_t to encode an event */
@@ -256,6 +267,7 @@ extern pfmlib_pmu_t amd64_fam17h_deprecated_support;
 extern pfmlib_pmu_t amd64_fam17h_zen1_support;
 extern pfmlib_pmu_t amd64_fam17h_zen2_support;
 extern pfmlib_pmu_t amd64_fam19h_zen3_support;
+extern pfmlib_pmu_t amd64_fam19h_zen4_support;
 extern pfmlib_pmu_t amd64_fam19h_zen3_l3_support;
 extern pfmlib_pmu_t amd64_rapl_support;
 extern pfmlib_pmu_t intel_p6_support;
@@ -293,6 +305,8 @@ extern pfmlib_pmu_t intel_skx_support;
 extern pfmlib_pmu_t intel_clx_support;
 extern pfmlib_pmu_t intel_icl_support;
 extern pfmlib_pmu_t intel_icx_support;
+extern pfmlib_pmu_t intel_spr_support;
+extern pfmlib_pmu_t intel_emr_support;
 extern pfmlib_pmu_t intel_rapl_support;
 extern pfmlib_pmu_t intel_snbep_unc_cb0_support;
 extern pfmlib_pmu_t intel_snbep_unc_cb1_support;
@@ -631,6 +645,7 @@ extern pfmlib_pmu_t power6_support;
 extern pfmlib_pmu_t power7_support;
 extern pfmlib_pmu_t power8_support;
 extern pfmlib_pmu_t power9_support;
+extern pfmlib_pmu_t power10_support;
 extern pfmlib_pmu_t torrent_support;
 extern pfmlib_pmu_t powerpc_nest_mcs_read_support;
 extern pfmlib_pmu_t powerpc_nest_mcs_write_support;
@@ -658,6 +673,9 @@ extern pfmlib_pmu_t arm_cortex_a57_support;
 extern pfmlib_pmu_t arm_cortex_a53_support;
 extern pfmlib_pmu_t arm_xgene_support;
 extern pfmlib_pmu_t arm_n1_support;
+extern pfmlib_pmu_t arm_n2_support;
+extern pfmlib_pmu_t arm_v1_support;
+extern pfmlib_pmu_t arm_v2_support;
 
 extern pfmlib_pmu_t arm_thunderx2_support;
 extern pfmlib_pmu_t arm_thunderx2_dmc0_support;
@@ -668,6 +686,64 @@ extern pfmlib_pmu_t arm_thunderx2_ccpi0_support;
 extern pfmlib_pmu_t arm_thunderx2_ccpi1_support;
 
 extern pfmlib_pmu_t arm_fujitsu_a64fx_support;
+
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl1_ddrc0_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl1_ddrc1_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl1_ddrc2_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl1_ddrc3_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl3_ddrc0_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl3_ddrc1_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl3_ddrc2_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl3_ddrc3_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl5_ddrc0_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl5_ddrc1_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl5_ddrc2_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl5_ddrc3_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl7_ddrc0_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl7_ddrc1_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl7_ddrc2_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl7_ddrc3_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl1_hha2_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl1_hha3_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl3_hha0_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl3_hha1_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl5_hha6_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl5_hha7_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl7_hha4_support;
+extern pfmlib_pmu_t arm_hisilicon_kunpeng_sccl7_hha5_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl1_l3c10_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl1_l3c11_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl1_l3c12_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl1_l3c13_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl1_l3c14_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl1_l3c15_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl1_l3c8_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl1_l3c9_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl3_l3c0_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl3_l3c1_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl3_l3c2_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl3_l3c3_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl3_l3c4_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl3_l3c5_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl3_l3c6_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl3_l3c7_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl5_l3c24_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl5_l3c25_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl5_l3c26_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl5_l3c27_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl5_l3c28_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl5_l3c29_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl5_l3c30_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl5_l3c31_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl7_l3c16_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl7_l3c17_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl7_l3c18_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl7_l3c19_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl7_l3c20_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl7_l3c21_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl7_l3c22_support;
+extern pfmlib_pmu_t	arm_hisilicon_kunpeng_sccl7_l3c23_support;
 
 extern pfmlib_pmu_t mips_74k_support;
 extern pfmlib_pmu_t s390x_cpum_cf_support;

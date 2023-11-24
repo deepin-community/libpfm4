@@ -1,2 +1,5 @@
 # this is a git snapshot
 hyphen-in-upstream-part-of-debian-changelog-version
+
+# event desciptions are not wrapped
+very-long-line-length-in-source-file * > 512 [lib/events/*.h:*]
